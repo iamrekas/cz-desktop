@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Electron Updater Example</title>
+</head>
+
+<body>
+  Current version: <span id="version">vX.Y.Z</span>
+  <div id="messages"></div>
+  <button id="checkUpdates">Check for update</button>
+  <button id="downloadUpdates">Download update</button>
+  <button id="installUpdates">Install update</button>
+  <script>
+    // Display the current version
+    window.api.version().then(version => { console.log(version); document.getElementById('version').innerText = version; });
+
+    // Listen for messages
+    window.api.receive("updates:log", (data) => {
+      var container = document.getElementById('messages');
+      var message = document.createElement('div');
+      message.innerHTML = data;
+      container.appendChild(message);
+    })
+    document.getElementById('checkUpdates').addEventListener('click', () => {
+      window.api.send("updates:check");
+    });
+    document.getElementById('downloadUpdates').addEventListener('click', () => {
+      window.api.send("updates:download");
+    });
+    document.getElementById('installUpdates').addEventListener('click', () => {
+      window.api.send("updates:install");
+    });
+  </script>
+</body>
+
+</html>

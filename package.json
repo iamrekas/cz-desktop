@@ -1,0 +1,147 @@
+{
+  "name": "cz-desktop",
+  "version": "0.0.1",
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.53",
+    "@types/react-dom": "^16.9.8",
+    "electron-log": "^4.3.1",
+    "electron-promise-ipc": "^2.2.4",
+    "electron-updater": "^4.3.5",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-scripts": "4.0.1",
+    "typescript": "^4.0.3",
+    "web-vitals": "^0.2.4"
+  },
+  "main": "electron/main.js",
+  "homepage": "./",
+  "scripts": {
+    "start:react": "react-scripts start",
+    "build:react": "react-scripts build",
+    "react-test": "react-scripts test --env=jsdom",
+    "react-eject": "react-scripts eject",
+    "dev:react": "cross-env BROWSER=none yarn start:react",
+    "dev:electron": "wait-on http://localhost:3000 && electron .",
+    "dev": "concurrently \"npm run dev:react\" \"npm run dev:electron\"",
+    "build:electron": "electron-builder --publish onTagOrDraft",
+    "build": "yarn build:react && yarn build:electron",
+    "rebuild:react": "yarn clean:react && yarn build:react",
+    "rebuild:electron": "yarn clean:electron && yarn build:electron",
+    "rebuild": "yarn clean && yarn build",
+    "preelectron-pack": "yarn build",
+    "clean:react": "rimraf build",
+    "clean:electron": "rimraf dist",
+    "clean": "yarn clean:react && yarn clean:electron",
+    "release": "release-it --disable-metrics",
+    "commit": "cz"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@release-it/conventional-changelog": "^2.0.0",
+    "commitizen": "^4.2.2",
+    "concurrently": "^5.3.0",
+    "cross-env": "^7.0.3",
+    "cz-conventional-changelog": "^3.3.0",
+    "electron": "^11.1.1",
+    "electron-builder": "^22.9.1",
+    "husky": "^4.3.6",
+    "release-it": "^14.2.2",
+    "rimraf": "^3.0.2",
+    "wait-on": "^5.2.0"
+  },
+  "author": {
+    "name": "Rekas <aure369@gmail.com>"
+  },
+  "description": "CZ Desktop client",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamrekas/cz-desktop.git"
+  },
+  "build": {
+    "appId": "com.cz.desktop",
+    "productName": "CzDesktop",
+    "copyright": "Copyright © 2020 Rekas",
+    "extends": null,
+    "files": [
+      "build/**/*",
+      "electron/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    },
+    "publish": {
+      "provider": "github",
+      "releaseType": "draft",
+      "publishAutoUpdate": true
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release v${version}",
+      "tagName": "v${version}"
+    },
+    "github": {
+      "release": true,
+      "draft": true
+    },
+    "hooks": {
+      "before:init": [
+        "yarn clean"
+      ],
+      "after:git:release": "echo After git push, before github release",
+      "after:release": [
+        "echo Successfully released ${name} v${version} to ${repo.repository}.",
+        "yarn build"
+      ]
+    },
+    "npm": {
+      "publish": false
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular",
+        "infile": "CHANGELOG.md"
+      }
+    }
+  }
+}
